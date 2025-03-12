@@ -1,0 +1,36 @@
+name: ${TYPE}
+services:
+    d:
+        image: amir20/dozzle:v8.11.7
+        container_name: ${TYPE}-${APP}
+        restart: unless-stopped
+        environment:
+            - DOZZLE_AUTH_PROVIDER=simple
+            - DOZZLE_AUTH_TTL=${DOZZLE_SESSION_LOGIN}
+
+            - DOZZLE_REMOTE_AGENT=${DOZZLE_URI_AGENT}
+
+            - DOZZLE_ENABLE_ACTIONS=true
+            - DOZZLE_FILTER=label=name
+            - DOZZLE_HOSTNAME=${NAME}
+        ports:
+            - '${FORWARD_PORT}:${PORT}'
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./users.yml:/data/users.yml:ro
+        networks:
+            - shared_network
+        healthcheck:
+            test: ['CMD', '/dozzle', 'healthcheck']
+            interval: 5s
+            retries: 3
+            start_period: 5s
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.1'
+                    memory: '32M'
+
+networks:
+    shared_network:
+        external: true
