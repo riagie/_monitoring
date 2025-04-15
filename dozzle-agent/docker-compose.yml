@@ -1,8 +1,7 @@
-name: ${TYPE}
 services:
-    da:
+    d:
         image: amir20/dozzle:v8.11.7
-        container_name: ${TYPE}-${APP}
+        container_name: dozzle-agent
         restart: unless-stopped
         command: agent
         environment:
@@ -28,7 +27,7 @@ services:
                     memory: '32M'
 networks:
     backend_network:
-        name: ${TYPE}-${APP}
+        name: src
         driver: overlay
         attachable: true
     shared_network:
